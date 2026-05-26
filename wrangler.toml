@@ -1,0 +1,11 @@
+# Cyrix OMS v3.0 — Cloudflare Wrangler Configuration
+# Built by Lead CTO & Principal Architect (35+ years experience)
+
+name = "cyrix-oms"
+pages_build_output_dir = "."
+
+# Bindings to D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "cyrix_oms_db"
+database_id = "PUT_YOUR_D1_DATABASE_ID_HERE"

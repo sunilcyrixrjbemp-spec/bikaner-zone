@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Configurations & Connection</title>
+  
+  <!-- CDNs for Tailwind, Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col md:flex-row overflow-x-hidden font-sans">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#131a2b] border-r border-slate-800/80 flex flex-col flex-shrink-0 z-20">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
+        <span class="font-bold tracking-wide text-white text-lg">CYRIX OMS</span>
+      </div>
+      <button id="toggle-sidebar" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="p-4 mx-4 my-4 bg-slate-800/40 rounded-xl border border-slate-700/30 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg font-semibold"><span id="user-initial">S</span></div>
+      <div>
+        <div id="user-display-name" class="font-semibold text-sm text-white">Loading...</div>
+        <div class="text-xs text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>Active Director</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <a href="../dashboard/dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-pie w-5"></i><span>Dashboard</span>
+      </a>
+      <a href="../complaints/complaints.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-ticket w-5"></i><span>Complaints</span>
+      </a>
+      <a href="../equipment/equipment.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-cubes w-5"></i><span>Equipment</span>
+      </a>
+      <a href="../analytics/analytics.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-line w-5"></i><span>Analytics</span>
+      </a>
+      <a href="settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-slate-800 text-white transition">
+        <i class="fa-solid fa-sliders w-5"></i><span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <button id="btn-logout" class="w-full flex items-center justify-center space-x-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 py-3 rounded-xl border border-rose-500/20 transition">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Frame -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-800 bg-[#0b0f19] flex items-center justify-between px-8 z-10">
+      <h2 class="text-lg font-bold text-white heading-mono">Settings & Connection</h2>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Profile Config Form -->
+        <div class="glass p-6 rounded-2xl lg:col-span-2 border border-slate-800">
+          <h3 class="text-md font-bold text-white mb-6 heading-mono uppercase tracking-wider">Global Configuration Console</h3>
+          
+          <form id="settings-form" class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 text-xs uppercase mb-2">Display Name</label>
+                <input type="text" id="set-display-name" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-slate-400 text-xs uppercase mb-2">Username</label>
+                <input type="text" id="set-username" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-slate-400 text-xs uppercase mb-2">Response SLA (Hours)</label>
+                <input type="number" id="set-sla-attend" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+              </div>
+              <div>
+                <label class="block text-slate-400 text-xs uppercase mb-2">Resolution SLA (Hours)</label>
+                <input type="number" id="set-sla-close" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-slate-400 text-xs uppercase mb-2">Penalty Deductive Period (Hours)</label>
+              <input type="number" id="set-penalty-period" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div class="border-t border-slate-800 pt-5 space-y-4">
+              <h4 class="text-sm font-semibold text-white">Reset Credentials</h4>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-slate-400 text-xs uppercase mb-2">New Password</label>
+                  <input type="password" id="set-password" placeholder="••••••••" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                  <label class="block text-slate-400 text-xs uppercase mb-2">Confirm Password</label>
+                  <input type="password" id="set-confirm-password" placeholder="••••••••" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+                </div>
+              </div>
+            </div>
+
+            <div id="settings-status" class="hidden p-3 rounded-lg text-sm"></div>
+
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-sm transition">
+              Save Configurations
+            </button>
+          </form>
+        </div>
+
+        <!-- Connection profile switch panel -->
+        <div class="glass p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+          <div>
+            <h3 class="text-md font-bold text-white mb-2 heading-mono uppercase tracking-wider">Database Connection</h3>
+            <p class="text-xs text-slate-400 mb-6 font-medium">Link this interface console with backend SQLite databases or Cloudflare D1 SQL networks.</p>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-slate-400 text-xs uppercase mb-2">Target Profile Mode</label>
+                <select id="set-db-mode" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+                  <option value="local">Local Sandboxed (IndexedDB)</option>
+                  <option value="api">Enterprise Cloud Engine (D1 / Workers)</option>
+                </select>
+              </div>
+
+              <div id="db-api-settings" class="hidden">
+                <label class="block text-slate-400 text-xs uppercase mb-2">Server API Endpoint URL</label>
+                <input type="text" id="set-api-url" placeholder="https://cyrix-oms.pages.dev" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-blue-500">
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 pt-6 mt-6">
+            <button id="btn-save-connection" class="w-full bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white font-semibold py-3 px-4 rounded-xl text-sm transition">
+              Connect Database Node
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

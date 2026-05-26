@@ -1,0 +1,33 @@
+/* Cyrix OMS v3.2 — Complaints Styles */
+/* Created by Senior UI/UX Architect */
+
+.glass {
+  background: rgba(22, 30, 49, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 36px;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.timeline-item:last-child::after {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}

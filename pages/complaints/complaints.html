@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Complaints Console</title>
+  
+  <!-- CDNs for Tailwind, Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="complaints.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col md:flex-row overflow-x-hidden font-sans">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#131a2b] border-r border-slate-800/80 flex flex-col flex-shrink-0 z-20">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
+        <span class="font-bold tracking-wide text-white text-lg">CYRIX OMS</span>
+      </div>
+      <button id="toggle-sidebar" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="p-4 mx-4 my-4 bg-slate-800/40 rounded-xl border border-slate-700/30 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg font-semibold"><span id="user-initial">S</span></div>
+      <div>
+        <div id="user-display-name" class="font-semibold text-sm text-white">Loading...</div>
+        <div class="text-xs text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>Active Director</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <a href="../dashboard/dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-pie w-5"></i><span>Dashboard</span>
+      </a>
+      <a href="complaints.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-slate-800 text-white transition">
+        <i class="fa-solid fa-ticket w-5"></i><span>Complaints</span>
+      </a>
+      <a href="../equipment/equipment.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-cubes w-5"></i><span>Equipment</span>
+      </a>
+      <a href="../analytics/analytics.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-line w-5"></i><span>Analytics</span>
+      </a>
+      <a href="../settings/settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-sliders w-5"></i><span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <button id="btn-logout" class="w-full flex items-center justify-center space-x-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 py-3 rounded-xl border border-rose-500/20 transition">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Frame -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-800 bg-[#0b0f19] flex items-center justify-between px-8 z-10">
+      <h2 class="text-lg font-bold text-white heading-mono">Incidents Console</h2>
+      <div class="flex items-center space-x-4">
+        <!-- Search bar hotkey -->
+        <kbd class="bg-[#131a2b] border border-slate-700/50 px-2 py-1 rounded text-[10px] text-slate-400">Ctrl+K</kbd>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-6">
+      
+      <!-- Filter Panel Control -->
+      <div class="glass p-5 rounded-2xl flex flex-wrap gap-4 items-center justify-between border border-slate-800">
+        <div class="flex flex-wrap gap-3 items-center flex-1">
+          <input type="text" id="filter-search" class="bg-[#131a2b] border border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 text-white min-w-[200px]" placeholder="Search Tickets, Officers...">
+          
+          <select id="filter-district" class="bg-[#131a2b] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+            <option value="">All Districts</option>
+            <option value="bikaner">Bikaner</option>
+            <option value="churu">Churu</option>
+            <option value="ganganagar">Ganganagar</option>
+            <option value="hanumangarh">Hanumangarh</option>
+          </select>
+
+          <select id="filter-status" class="bg-[#131a2b] border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-blue-500">
+            <option value="">All Statuses</option>
+            <option value="Open">Open</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+
+        <button id="btn-raise-complaint" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 transition duration-200">
+          <i class="fa-solid fa-plus"></i><span>Raise Complaint</span>
+        </button>
+      </div>
+
+      <!-- Table Content Grid -->
+      <div class="glass rounded-2xl overflow-hidden border border-slate-800">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-800/40 text-slate-300 border-b border-slate-700/50">
+                <th class="p-4">Ticket ID</th>
+                <th class="p-4">District</th>
+                <th class="p-4">Facility Location</th>
+                <th class="p-4">Asset Barcode</th>
+                <th class="p-4">Downtime Days</th>
+                <th class="p-4">SLA status</th>
+                <th class="p-4 text-right">Penalty Accrued</th>
+                <th class="p-4 text-center">Inspect</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-complaints" class="divide-y divide-slate-800/60">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== NEW COMPLAINT MODAL ==================== -->
+  <div id="modal-add" class="hidden fixed inset-0 bg-[#0b0f19]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl p-6 border border-slate-800">
+      <h3 class="text-lg font-bold text-white mb-4 heading-mono">Raise Operational Complaint</h3>
+      <form id="add-form" class="space-y-4 text-sm">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Asset Barcode</label>
+            <select id="add-eq-id" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+              <!-- Dynamic -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Facility Location</label>
+            <select id="add-hospital-id" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+              <!-- Dynamic -->
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Reporting DI Officer</label>
+            <input type="text" id="add-di-name" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="Dr. S. K. Choudhary">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Warranty State</label>
+            <select id="add-warranty-flag" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+              <option value="Out of Warranty">Out of Warranty (Penalizable)</option>
+              <option value="Warranty">Warranty (Waiver)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-slate-400 text-xs mb-1.5 uppercase">Incident Details / Remarks</label>
+          <textarea id="add-remarks" required rows="3" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="Describe fault symptoms..."></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+          <button type="button" id="btn-add-cancel" class="bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-xl">Cancel</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold">Initiate Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== DETAILS INSPECT MODAL ==================== -->
+  <div id="modal-inspect" class="hidden fixed inset-0 bg-[#0b0f19]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass w-full max-w-4xl rounded-2xl overflow-y-auto shadow-2xl p-6 border border-slate-800 max-h-[90vh]">
+      <div class="flex items-center justify-between mb-6 pb-3 border-b border-slate-800">
+        <h3 class="text-lg font-bold text-white heading-mono">Ticket Console — <span id="insp-title" class="text-cyan-400"></span></h3>
+        <button id="btn-insp-close" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Details Column -->
+        <div class="md:col-span-2 space-y-4">
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div>
+              <span class="text-slate-400 block mb-0.5">Raised Date</span>
+              <span id="insp-raise-date" class="font-bold text-slate-200"></span>
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-0.5">Facility Location</span>
+              <span id="insp-facility" class="font-bold text-slate-200"></span>
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-0.5">Asset Barcode</span>
+              <span id="insp-barcode" class="font-bold text-cyan-400"></span>
+            </div>
+            <div>
+              <span class="text-slate-400 block mb-0.5">Warranty State</span>
+              <span id="insp-warranty" class="font-bold text-slate-200"></span>
+            </div>
+          </div>
+          
+          <div class="bg-[#131a2b]/40 border border-slate-800 p-3 rounded-xl text-xs">
+            <span class="text-slate-400 block mb-1">Remarks</span>
+            <p id="insp-remarks" class="text-slate-300"></p>
+          </div>
+
+          <!-- Logs Timeline -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Engineering Logs</span>
+              <button id="btn-insp-add-log" class="text-[10px] bg-slate-800 border border-slate-700 px-2 py-1 rounded text-slate-300">Add Log</button>
+            </div>
+            <div id="insp-timeline" class="space-y-3 pt-1">
+              <!-- Dynamic -->
+            </div>
+          </div>
+        </div>
+
+        <!-- SLA calculations column -->
+        <div class="space-y-4 border-l border-slate-800/80 pl-6">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">SLA Diagnostics</h4>
+          
+          <div class="bg-[#131a2b]/80 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">Downtime</span>
+            <span id="insp-downtime" class="text-lg font-bold text-white">0 Days</span>
+          </div>
+
+          <div class="bg-[#131a2b]/80 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+            <div>
+              <span class="text-[10px] text-slate-400 block">Response State</span>
+              <span id="insp-resp-time" class="text-xs text-slate-300">Attended</span>
+            </div>
+            <span id="insp-resp-badge"></span>
+          </div>
+
+          <div class="bg-[#131a2b]/80 p-3 rounded-xl border border-slate-800">
+            <span class="text-[10px] text-slate-400 block">Accrued Penalty</span>
+            <span id="insp-penalty" class="text-lg font-extrabold text-rose-400">₹0</span>
+          </div>
+
+          <div class="pt-4 space-y-2 border-t border-slate-800">
+            <button id="btn-action-attend" class="w-full bg-blue-600 hover:bg-blue-500 py-2.5 rounded-xl text-xs font-bold text-white transition">Log Engineer Visit</button>
+            <button id="btn-action-close" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2.5 rounded-xl text-xs font-bold text-white transition">Close Ticket</button>
+            <button id="btn-action-delete" class="w-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 py-2 rounded-xl text-xs transition">Delete Ticket</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NEW LOG MODAL ==================== -->
+  <div id="modal-add-log" class="hidden fixed inset-0 bg-[#0b0f19]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 border border-slate-800">
+      <h3 class="text-md font-bold text-white mb-4 heading-mono">Append Engineering Log</h3>
+      <form id="add-log-form" class="space-y-4 text-sm">
+        <div>
+          <label class="block text-slate-400 text-xs mb-1.5 uppercase">Technical Log Detail</label>
+          <textarea id="add-log-note" required rows="3" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="Type engineering visit notes..."></textarea>
+        </div>
+        <div>
+          <label class="block text-slate-400 text-xs mb-1.5 uppercase">Next Action Target Date</label>
+          <input type="date" id="add-log-next-date" class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+        </div>
+        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+          <button type="button" id="btn-add-log-cancel" class="bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-xl">Cancel</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold">Append Log</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Global Search Overlay (Ctrl+K) -->
+  <div id="modal-search" class="hidden fixed inset-0 bg-[#0b0f19]/80 backdrop-blur-sm z-50 flex items-start justify-center pt-[15vh] px-4">
+    <div class="glass w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-slate-800">
+      <div class="flex items-center space-x-3 px-4 py-3.5 border-b border-slate-800 bg-[#131a2b]">
+        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+        <input type="text" id="modal-search-input" class="w-full bg-transparent text-white placeholder-slate-500 focus:outline-none text-sm" placeholder="Type complaint ID, hospital or barcode...">
+        <button id="modal-search-close" class="text-xs bg-slate-800 border border-slate-700 text-slate-400 hover:text-white px-2 py-1 rounded">ESC</button>
+      </div>
+      <div id="modal-search-results" class="max-h-[350px] overflow-y-auto p-4 space-y-4 divide-y divide-slate-800">
+        <p class="text-slate-500 text-xs text-center py-6">Begin typing to scan indices...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="complaints.js"></script>
+</body>
+</html>

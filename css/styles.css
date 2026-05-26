@@ -1,0 +1,152 @@
+/* Cyrix OMS v3.1 — Custom Aesthetics & Layout Style Sheet */
+/* Created by Lead CTO & Principal Architect (35+ years experience) */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'Space Grotesk', sans-serif;
+
+  /* Custom Color Tokens - Neo-Dark Theme */
+  --bg-primary: #0b0f19;
+  --bg-secondary: #131a2b;
+  --bg-card: rgba(22, 30, 49, 0.7);
+  --border-color: rgba(255, 255, 255, 0.08);
+
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-green: #10b981;
+  --accent-orange: #f57c00;
+  --accent-red: #f43f5e;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --glow-shadow: 0 0 25px rgba(59, 130, 246, 0.2);
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+.glass-hover:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 40px -5px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Neon glow indicators */
+.glow-blue { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+.glow-green { box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+.glow-red { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+.glow-orange { box-shadow: 0 0 15px rgba(245, 124, 0, 0.4); }
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.pulse-glow {
+  animation: pulseGlow 3s infinite ease-in-out;
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+/* Timeline specific styles */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 36px;
+  bottom: 0;
+  width: 2px;
+  background-color: var(--border-color);
+}
+.timeline-item:last-child::after {
+  display: none;
+}
+
+/* Status pill maps */
+.status-open {
+  background-color: rgba(244, 63, 94, 0.1);
+  color: var(--accent-red);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+}
+
+.status-closed {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--accent-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.status-pending {
+  background-color: rgba(245, 124, 0, 0.1);
+  color: var(--accent-orange);
+  border: 1px solid rgba(245, 124, 0, 0.2);
+}
+
+/* Typography styles */
+.heading-mono {
+  font-family: var(--font-mono);
+}

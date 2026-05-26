@@ -1,0 +1,23 @@
+/* Cyrix OMS v3.2 — Settings Styles */
+/* Created by Senior UI/UX Architect */
+
+.glass {
+  background: rgba(22, 30, 49, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}

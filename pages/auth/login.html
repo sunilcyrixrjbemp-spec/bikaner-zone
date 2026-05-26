@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Enterprise Portal Login</title>
+  
+  <!-- CDNs for Tailwind, Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col justify-between overflow-x-hidden font-sans">
+
+  <!-- Floating animated background mesh -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute -top-[30%] -left-[20%] w-[80vw] h-[80vw] rounded-full bg-blue-600/10 filter blur-[120px] animate-pulse"></div>
+    <div class="absolute -bottom-[30%] -right-[20%] w-[80vw] h-[80vw] rounded-full bg-purple-600/10 filter blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="w-full py-6 px-8 relative z-10 flex items-center justify-between border-b border-slate-800/40 bg-[#0b0f19]/80 backdrop-blur-md">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">C</div>
+      <span class="font-bold tracking-wide text-lg text-white">CYRIX <span class="text-blue-500 font-medium">OMS</span></span>
+    </div>
+    <div>
+      <span class="text-xs text-slate-500 mr-2">Secure Connection</span>
+      <i class="fa-solid fa-lock text-emerald-400 text-xs animate-pulse"></i>
+    </div>
+  </header>
+
+  <!-- Main Login Grid -->
+  <main class="flex-1 flex items-center justify-center p-6 relative z-10">
+    <div class="glass-card w-full max-w-[480px] p-10 rounded-3xl relative overflow-hidden border border-slate-800/80 shadow-2xl">
+      <!-- Top header context -->
+      <div class="text-center mb-8 relative">
+        <div class="w-14 h-14 bg-blue-600/10 text-blue-500 border border-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 animate-bounce">
+          <i class="fa-solid fa-shield-halved text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold tracking-tight text-white">Console Authentication</h2>
+        <p class="text-slate-400 text-sm mt-1">Rajasthan Operations Management System</p>
+      </div>
+
+      <!-- Auth Tab Menu -->
+      <div class="flex border-b border-slate-800/80 mb-6 text-sm">
+        <button id="tab-login" class="flex-1 pb-3 text-center border-b-2 border-blue-500 text-blue-500 font-semibold transition duration-200">Sign In</button>
+        <button id="tab-register" class="flex-1 pb-3 text-center border-b-2 border-transparent text-slate-400 font-medium hover:text-white transition duration-200">Request Access</button>
+      </div>
+
+      <!-- Forms Container -->
+      <div class="relative min-h-[300px]">
+        <!-- Sign In Form -->
+        <form id="form-login" class="space-y-5 animate-fade-in">
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-2">Username</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-user"></i></span>
+              <input type="text" id="login-username" required class="w-full bg-[#131a2b]/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200" placeholder="e.g. Sunil">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-2">Password</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-key"></i></span>
+              <input type="password" id="login-password" required class="w-full bg-[#131a2b]/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200" placeholder="••••••••">
+            </div>
+          </div>
+
+          <div id="login-error-container" class="hidden text-rose-500 text-xs border border-rose-500/20 bg-rose-500/10 p-3 rounded-xl flex items-center space-x-2">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <span id="login-error-msg">Invalid password hash match.</span>
+          </div>
+
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-600/25 transition duration-200">
+            Secure Entry & Sync
+          </button>
+        </form>
+
+        <!-- Access Request Form -->
+        <form id="form-register" class="space-y-5 hidden animate-fade-in">
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-2">Full Name</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-address-card"></i></span>
+              <input type="text" id="reg-name" required class="w-full bg-[#131a2b]/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200" placeholder="Dr. S. K. Sen">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-2">Desired Username</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-user-plus"></i></span>
+              <input type="text" id="reg-username" required class="w-full bg-[#131a2b]/80 border border-slate-800 rounded-xl py-3 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200" placeholder="Username">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-slate-300 text-xs font-semibold uppercase tracking-wider mb-2">District Authority</label>
+            <select id="reg-district" required class="w-full bg-[#131a2b]/80 border border-slate-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition duration-200">
+              <option value="bikaner">Bikaner District</option>
+              <option value="churu">Churu District</option>
+              <option value="ganganagar">Sri Ganganagar District</option>
+              <option value="hanumangarh">Hanumangarh District</option>
+            </select>
+          </div>
+
+          <div id="reg-status-container" class="hidden text-emerald-400 text-xs border border-emerald-500/20 bg-emerald-500/10 p-3 rounded-xl">
+            <i class="fa-solid fa-circle-check mr-2"></i> Request lodged with CTO. Pending review.
+          </div>
+
+          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-600/25 transition duration-200">
+            Submit Request Credentials
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-4 text-center text-slate-500 text-xs border-t border-slate-900 bg-[#0b0f19]/40 relative z-10">
+    Rajasthan Operations Control Network • Confidential Data Protocol
+  </footer>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>

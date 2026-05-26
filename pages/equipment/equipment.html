@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Equipment Registry</title>
+  
+  <!-- CDNs for Tailwind, Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="equipment.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col md:flex-row overflow-x-hidden font-sans">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#131a2b] border-r border-slate-800/80 flex flex-col flex-shrink-0 z-20">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
+        <span class="font-bold tracking-wide text-white text-lg">CYRIX OMS</span>
+      </div>
+      <button id="toggle-sidebar" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="p-4 mx-4 my-4 bg-slate-800/40 rounded-xl border border-slate-700/30 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg font-semibold"><span id="user-initial">S</span></div>
+      <div>
+        <div id="user-display-name" class="font-semibold text-sm text-white">Loading...</div>
+        <div class="text-xs text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>Active Director</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <a href="../dashboard/dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-pie w-5"></i><span>Dashboard</span>
+      </a>
+      <a href="../complaints/complaints.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-ticket w-5"></i><span>Complaints</span>
+      </a>
+      <a href="equipment.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-slate-800 text-white transition">
+        <i class="fa-solid fa-cubes w-5"></i><span>Equipment</span>
+      </a>
+      <a href="../analytics/analytics.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-line w-5"></i><span>Analytics</span>
+      </a>
+      <a href="../settings/settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-sliders w-5"></i><span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <button id="btn-logout" class="w-full flex items-center justify-center space-x-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 py-3 rounded-xl border border-rose-500/20 transition">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Frame -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-800 bg-[#0b0f19] flex items-center justify-between px-8 z-10">
+      <h2 class="text-lg font-bold text-white heading-mono">Asset Registry</h2>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-6">
+      
+      <!-- Control Panel -->
+      <div class="glass p-5 rounded-2xl flex flex-wrap gap-4 items-center justify-between border border-slate-800">
+        <div class="flex flex-wrap gap-3 items-center flex-1">
+          <input type="text" id="filter-search" class="bg-[#131a2b] border border-slate-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-blue-500 text-white min-w-[250px]" placeholder="Scan barcode or type name...">
+          
+          <button id="btn-scan" class="bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-600/30 px-4 py-2 rounded-xl text-sm font-semibold flex items-center space-x-2 transition">
+            <i class="fa-solid fa-barcode"></i><span>Simulate Barcode Scan</span>
+          </button>
+        </div>
+
+        <button id="btn-add-asset" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center space-x-2 transition duration-200">
+          <i class="fa-solid fa-plus"></i><span>Add New Asset</span>
+        </button>
+      </div>
+
+      <!-- Equipment Data Table -->
+      <div class="glass rounded-2xl overflow-hidden border border-slate-800">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-800/40 text-slate-300 border-b border-slate-700/50">
+                <th class="p-4">Barcode</th>
+                <th class="p-4">Asset Name</th>
+                <th class="p-4">Model</th>
+                <th class="p-4">Hospital Location</th>
+                <th class="p-4">Asset Value</th>
+                <th class="p-4">Warranty Expiry</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-equipment" class="divide-y divide-slate-800/60">
+              <!-- Dynamic -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== ADD ASSET MODAL ==================== -->
+  <div id="modal-add" class="hidden fixed inset-0 bg-[#0b0f19]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="glass w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6 border border-slate-800">
+      <h3 class="text-lg font-bold text-white mb-4 heading-mono">Add Equipment Asset</h3>
+      <form id="add-form" class="space-y-4 text-sm">
+        <div>
+          <label class="block text-slate-400 text-xs mb-1.5 uppercase">Asset Name</label>
+          <input type="text" id="add-name" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="e.g. ICU Ventilator">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Model</label>
+            <input type="text" id="add-model" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="e.g. GE V60">
+          </div>
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Book Value (INR)</label>
+            <input type="number" id="add-value" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500" placeholder="850000">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Facility Location</label>
+            <select id="add-hosp" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+              <!-- Dynamic -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 text-xs mb-1.5 uppercase">Warranty Expiry</label>
+            <input type="date" id="add-warranty" required class="w-full bg-[#131a2b] border border-slate-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-800">
+          <button type="button" id="btn-add-cancel" class="bg-slate-800 border border-slate-700 text-slate-300 px-4 py-2.5 rounded-xl">Cancel</button>
+          <button type="submit" class="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold">Save Asset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="equipment.js"></script>
+</body>
+</html>

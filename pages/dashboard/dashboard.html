@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Operations Dashboard</title>
+  
+  <!-- CDNs for Tailwind, Icons, Charts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col md:flex-row overflow-x-hidden font-sans">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#131a2b] border-r border-slate-800/80 flex flex-col flex-shrink-0 z-20">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
+        <span class="font-bold tracking-wide text-white text-lg">CYRIX OMS</span>
+      </div>
+      <button id="toggle-sidebar" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="p-4 mx-4 my-4 bg-slate-800/40 rounded-xl border border-slate-700/30 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg font-semibold"><span id="user-initial">S</span></div>
+      <div>
+        <div id="user-display-name" class="font-semibold text-sm text-white">Loading...</div>
+        <div class="text-xs text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>Active Director</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <a href="dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-slate-800 text-white transition">
+        <i class="fa-solid fa-chart-pie w-5"></i><span>Dashboard</span>
+      </a>
+      <a href="../complaints/complaints.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-ticket w-5"></i><span>Complaints</span>
+      </a>
+      <a href="../equipment/equipment.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-cubes w-5"></i><span>Equipment</span>
+      </a>
+      <a href="../analytics/analytics.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-line w-5"></i><span>Analytics</span>
+      </a>
+      <a href="../settings/settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-sliders w-5"></i><span>Settings</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <button id="btn-logout" class="w-full flex items-center justify-center space-x-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 py-3 rounded-xl border border-rose-500/20 transition">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Frame -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-800 bg-[#0b0f19] flex items-center justify-between px-8 z-10">
+      <h2 class="text-lg font-bold text-white heading-mono">Mission Control Dashboard</h2>
+      <div class="flex items-center space-x-4">
+        <span class="text-xs text-slate-400"><i class="fa-solid fa-database text-cyan-400 mr-2"></i>Mode: <span id="db-mode-val" class="font-bold text-white capitalize">Local</span></span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-6">
+      
+      <!-- Critical alert tickers -->
+      <div id="ticker-container" class="hidden bg-rose-950/40 border border-rose-500/20 rounded-xl p-3.5 flex items-center text-rose-300 text-sm overflow-hidden relative">
+        <span class="font-bold heading-mono uppercase text-xs tracking-wider bg-rose-500/25 px-2 py-0.5 rounded border border-rose-500/30 z-10 mr-4">CRITICAL</span>
+        <div class="flex-1 overflow-hidden relative h-5">
+          <div id="ticker-text" class="absolute whitespace-nowrap animate-marquee">Checking for SLA breaches...</div>
+        </div>
+      </div>
+
+      <!-- Action Panel -->
+      <div class="glass p-5 rounded-2xl flex items-center justify-between border border-slate-800">
+        <div>
+          <h3 class="text-md font-bold text-white">Simulations & Setup</h3>
+          <p class="text-xs text-slate-400 mt-0.5">Quickly seed fake data to stress-test charts and calculations.</p>
+        </div>
+        <div class="flex space-x-3">
+          <button id="btn-simulate-data" class="bg-cyan-600 hover:bg-cyan-500 active:bg-cyan-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold transition duration-200">
+            Simulate 100+ Tickets
+          </button>
+          <button id="btn-reset-db" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 px-4 py-2.5 rounded-xl text-xs font-bold transition duration-200">
+            Wipe DB
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="glass p-5 rounded-2xl border border-slate-800 border-l-4 border-l-blue-500">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Complaints</span>
+          <h3 id="kpi-total" class="text-3xl font-extrabold mt-1 text-white">0</h3>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-slate-800 border-l-4 border-l-rose-500">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Active Open</span>
+          <h3 id="kpi-open" class="text-3xl font-extrabold mt-1 text-white">0</h3>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-slate-800 border-l-4 border-l-emerald-500">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">SLA Compliance</span>
+          <h3 id="kpi-compliance" class="text-3xl font-extrabold mt-1 text-emerald-400">0%</h3>
+        </div>
+        <div class="glass p-5 rounded-2xl border border-slate-800 border-l-4 border-l-purple-500">
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Penalty Exposure</span>
+          <h3 id="kpi-penalty" class="text-3xl font-extrabold mt-1 text-purple-400">₹0</h3>
+        </div>
+      </div>
+
+      <!-- Charts & Scorecard Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-2xl lg:col-span-2 border border-slate-800">
+          <h4 class="text-sm font-bold text-white mb-4 heading-mono uppercase tracking-wider">Monthly Incident Progression</h4>
+          <div class="h-64 relative">
+            <canvas id="chart-monthly-trend"></canvas>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl border border-slate-800">
+          <h4 class="text-sm font-bold text-white mb-4 heading-mono uppercase tracking-wider">Hospital Distribution</h4>
+          <div class="h-64 relative flex justify-center">
+            <canvas id="chart-hospital-type"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass p-6 rounded-2xl border border-slate-800">
+          <h4 class="text-sm font-bold text-white mb-4 heading-mono uppercase tracking-wider">SLA Gauge</h4>
+          <div class="h-48 relative flex justify-center">
+            <canvas id="chart-sla-compliance"></canvas>
+          </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl lg:col-span-2 border border-slate-800">
+          <h4 class="text-sm font-bold text-white mb-4 heading-mono uppercase tracking-wider">District Operations Scorecard</h4>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-500 font-semibold">
+                  <th class="py-2.5">District</th>
+                  <th class="py-2.5">Total Tickets</th>
+                  <th class="py-2.5">Open</th>
+                  <th class="py-2.5">SLA Compliance</th>
+                  <th class="py-2.5 text-right">Incurred Penalty</th>
+                </tr>
+              </thead>
+              <tbody id="tbl-district-scorecards" class="divide-y divide-slate-800/40 text-slate-300">
+                <!-- Dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="dashboard.js"></script>
+</body>
+</html>
