@@ -4,6 +4,7 @@
 name = "cyrix-oms"
 pages_build_output_dir = "."
 compatibility_date = "2026-05-26"
+account_id = "befbd2e0ff580a1d0d0865f011002053"
 
 [assets]
 directory = "."
@@ -11,5 +12,5 @@ directory = "."
 # Bindings to D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "cyrix_oms_db"
-database_id = "PUT_YOUR_D1_DATABASE_ID_HERE"
+database_name = "bikaner-zone"
+database_id = "66cb308d-e9c9-4774-89ef-85fef26b5bb3"
