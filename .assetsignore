@@ -1,0 +1,10 @@
+node_modules/
+.git/
+.gemini/
+functions/
+schema.sql
+wrangler.toml
+package.json
+package-lock.json
+node-v22.14.0-win-x64/
+.assetsignore

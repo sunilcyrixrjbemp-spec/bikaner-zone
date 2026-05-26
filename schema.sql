@@ -413,6 +413,12 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     hash TEXT UNIQUE NOT NULL -- Verification hash to ensure immutability
 );
 
+-- 36. Settings Configuration (D1 settings store)
+CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    val TEXT NOT NULL
+);
+
 -- ==================== INDEXES & PERFORMANCE OPTIMIZATION ====================
 
 CREATE INDEX IF NOT EXISTS idx_equipment_barcode ON equipment(barcode);
@@ -468,3 +474,12 @@ INSERT OR IGNORE INTO sla_tracking (id, hospital_type, response_hours, resolutio
 INSERT OR IGNORE INTO vendors (id, name, contact_person, email, phone) VALUES
 ('v101', 'BPL Medical Technologies', 'Ramesh Sen', 'ramesh@bpl.in', '9876543210'),
 ('v102', 'GE Healthcare India', 'Vikram Kalla', 'vikram@ge.com', '9876543211');
+
+INSERT OR IGNORE INTO settings (key, val) VALUES
+('username', 'Sunil'),
+('displayName', 'Sunil Kumar'),
+('passwordHash', '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321'),
+('sla_attend_hours', '24'),
+('sla_close_hours', '72'),
+('penalty_period_hours', '24');
+

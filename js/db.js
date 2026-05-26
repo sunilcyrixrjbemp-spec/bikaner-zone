@@ -140,8 +140,20 @@ class DatabaseManager {
   }
 
   initLocalData() {
-    if (!localStorage.getItem(STORAGE_KEY)) {
+    const localDataRaw = localStorage.getItem(STORAGE_KEY);
+    if (!localDataRaw) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_SEED_DATA));
+    } else {
+      try {
+        const parsed = JSON.parse(localDataRaw);
+        if (parsed && parsed.settings && parsed.settings.passwordHash === 'e6900a0b67484dfc2826cf6f2e24cf81c3d180862024db49830fd17282b0e6bf') {
+          parsed.settings.passwordHash = '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321';
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+          console.log("Migrated local mockup database password hash to match Sunil@9784.");
+        }
+      } catch (e) {
+        console.error("Failed to migrate legacy localStorage password hash:", e);
+      }
     }
   }
 

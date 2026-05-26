@@ -97,6 +97,17 @@
             await this.put(storeName, item);
           }
         }
+      } else {
+        // Migration check for legacy credentials cache
+        try {
+          const storedHash = await this.get('settings', 'passwordHash');
+          if (!storedHash || storedHash.val === 'e6900a0b67484dfc2826cf6f2e24cf81c3d180862024db49830fd17282b0e6bf') {
+            await this.put('settings', { key: 'passwordHash', val: '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321' });
+            console.log("Migrated IndexedDB setting 'passwordHash' to match Sunil@9784.");
+          }
+        } catch (e) {
+          console.warn("Self-healing credentials migration skipped:", e);
+        }
       }
     },
 
