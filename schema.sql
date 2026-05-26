@@ -452,7 +452,7 @@ INSERT OR IGNORE INTO departments (id, name, code) VALUES
 ('dept_admin', 'Administration', 'ADMIN');
 
 INSERT OR IGNORE INTO users (id, username, email, password_hash, display_name, role_id, department_id, district_id) VALUES
-('u101', 'Sunil', 'rjbemp-bikaner@cyrix.in', 'e6900a0b67484dfc2826cf6f2e24cf81c3d180862024db49830fd17282b0e6bf', 'Sunil Kumar', 'super_admin', 'dept_bme', 'bikaner');
+('u101', 'Sunil', 'rjbemp-bikaner@cyrix.in', '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321', 'Sunil Kumar', 'super_admin', 'dept_bme', 'bikaner');
 
 INSERT OR IGNORE INTO penalty_slabs (id, max_value, per_period) VALUES
 ('slab1', 500000, 500),

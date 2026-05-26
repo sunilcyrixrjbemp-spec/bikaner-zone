@@ -44,7 +44,7 @@
     settings: [
       { key: 'username', val: 'Sunil' },
       { key: 'displayName', val: 'Sunil Kumar' },
-      { key: 'passwordHash', val: 'e6900a0b67484dfc2826cf6f2e24cf81c3d180862024db49830fd17282b0e6bf' },
+      { key: 'passwordHash', val: '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321' },
       { key: 'sla_attend_hours', val: '24' },
       { key: 'sla_close_hours', val: '72' },
       { key: 'penalty_period_hours', val: '24' }

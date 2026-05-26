@@ -40,7 +40,7 @@ const INITIAL_SEED_DATA = {
   settings: {
     username: 'Sunil',
     displayName: 'Sunil Kumar',
-    passwordHash: 'e6900a0b67484dfc2826cf6f2e24cf81c3d180862024db49830fd17282b0e6bf', // Hash of 'Sunil@9784'
+    passwordHash: '75bba3b59ddb55b7fd0d2593cb838c811c844c7ee5123d2cc3c8b40029cbb321', // Hash of 'Sunil@9784'
     sla_attend_hours: 24,
     sla_close_hours: 72,
     penalty_period_hours: 24,
