@@ -5,7 +5,7 @@
   'use strict';
 
   const DB_NAME = 'CyrixOMS_EnterpriseDB';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   let dbInstance = null;
 
   const STORES = {
@@ -19,7 +19,9 @@
     followups: 'id',
     remarks: 'id',
     settings: 'key',
-    penalty_slabs: 'id'
+    penalty_slabs: 'id',
+    csv_uploads: 'id',
+    import_history: 'id'
   };
 
   const SEED_DATA = {

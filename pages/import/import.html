@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyrix OMS — Universal Data Import Center</title>
+  
+  <!-- Tailwind CSS and Icon Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            cyber: {
+              bg: '#0b0f19',
+              dark: '#131a2b',
+              card: '#161e31',
+              accent: '#3b82f6',
+              purple: '#8b5cf6',
+              green: '#10b981',
+              red: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="import.css">
+</head>
+<body class="bg-[#0b0f19] text-slate-100 min-h-screen flex flex-col md:flex-row overflow-x-hidden font-sans">
+
+  <!-- Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-[#131a2b] border-r border-slate-800/80 flex flex-col flex-shrink-0 z-20">
+    <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white">C</div>
+        <span class="font-bold tracking-wide text-white text-lg">CYRIX OMS</span>
+      </div>
+      <button id="toggle-sidebar" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+    <!-- User Profile Card -->
+    <div class="p-4 mx-4 my-4 bg-slate-800/40 rounded-xl border border-slate-700/30 flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg font-semibold"><span id="user-initial">S</span></div>
+      <div>
+        <div id="user-display-name" class="font-semibold text-sm text-white">Loading...</div>
+        <div class="text-xs text-emerald-400 flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>Active Director</div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto">
+      <a href="../dashboard/dashboard.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-pie w-5"></i><span>Dashboard</span>
+      </a>
+      <a href="../complaints/complaints.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-ticket w-5"></i><span>Complaints</span>
+      </a>
+      <a href="../equipment/equipment.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-cubes w-5"></i><span>Equipment</span>
+      </a>
+      <a href="../analytics/analytics.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-chart-line w-5"></i><span>Analytics</span>
+      </a>
+      <a href="../settings/settings.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800/50 hover:text-white transition">
+        <i class="fa-solid fa-sliders w-5"></i><span>Settings</span>
+      </a>
+      <a href="import.html" class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-slate-800 text-white transition">
+        <i class="fa-solid fa-file-import w-5"></i><span>Data Import</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t border-slate-800">
+      <button id="btn-logout" class="w-full flex items-center justify-center space-x-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 py-3 rounded-xl border border-rose-500/20 transition">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main View Frame -->
+  <main class="flex-1 flex flex-col overflow-y-auto">
+    <!-- Header -->
+    <header class="h-16 border-b border-slate-800 bg-[#0b0f19] flex items-center justify-between px-8 z-10">
+      <h2 class="text-lg font-bold text-white heading-mono">Universal CSV Import Hub</h2>
+      <div class="flex items-center space-x-4">
+        <span class="text-xs text-slate-400"><i class="fa-solid fa-database text-cyan-400 mr-2"></i>Mode: <span id="db-mode-val" class="font-bold text-white capitalize">Local</span></span>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="p-8 space-y-6">
+
+      <!-- Step Indicator Bar -->
+      <div class="grid grid-cols-4 gap-4 p-4 bg-[#131a2b]/80 border border-slate-800 rounded-2xl">
+        <div id="step-ind-1" class="flex items-center space-x-3 text-sm font-semibold border-b-2 border-blue-500 pb-2 transition">
+          <span class="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs">1</span>
+          <span class="text-white">Upload File</span>
+        </div>
+        <div id="step-ind-2" class="flex items-center space-x-3 text-sm font-semibold text-slate-500 border-b-2 border-transparent pb-2 transition">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">2</span>
+          <span>Match Columns</span>
+        </div>
+        <div id="step-ind-3" class="flex items-center space-x-3 text-sm font-semibold text-slate-500 border-b-2 border-transparent pb-2 transition">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">3</span>
+          <span>Dry-Run Check</span>
+        </div>
+        <div id="step-ind-4" class="flex items-center space-x-3 text-sm font-semibold text-slate-500 border-b-2 border-transparent pb-2 transition">
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-xs">4</span>
+          <span>Completion</span>
+        </div>
+      </div>
+
+      <!-- Main Ingestion Panel -->
+      <div class="relative">
+
+        <!-- ==================== STEP 1: FILE UPLOAD ==================== -->
+        <div id="step-panel-1" class="space-y-6">
+          <div class="glass p-6 rounded-2xl border border-slate-800 space-y-4">
+            <h3 class="text-md font-bold text-white heading-mono">Select Destination Schema</h3>
+            <p class="text-xs text-slate-400">Choose the database table you wish to insert records into.</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <button data-schema="districts" class="schema-btn p-4 rounded-xl border border-slate-800 bg-[#131a2b]/40 hover:bg-[#131a2b] hover:border-blue-500/50 text-slate-300 font-bold text-xs flex flex-col items-center justify-center space-y-2 transition">
+                <i class="fa-solid fa-map-location-dot text-lg text-blue-400"></i><span>Districts</span>
+              </button>
+              <button data-schema="hospitals" class="schema-btn p-4 rounded-xl border border-slate-800 bg-[#131a2b]/40 hover:bg-[#131a2b] hover:border-blue-500/50 text-slate-300 font-bold text-xs flex flex-col items-center justify-center space-y-2 transition">
+                <i class="fa-solid fa-hospital text-lg text-emerald-400"></i><span>Hospitals</span>
+              </button>
+              <button data-schema="equipment" class="schema-btn p-4 rounded-xl border border-slate-800 bg-[#131a2b]/40 hover:bg-[#131a2b] hover:border-blue-500/50 text-slate-300 font-bold text-xs flex flex-col items-center justify-center space-y-2 transition">
+                <i class="fa-solid fa-cubes text-lg text-purple-400"></i><span>Equipment</span>
+              </button>
+              <button data-schema="complaints" class="schema-btn p-4 rounded-xl border border-slate-800 bg-[#131a2b]/40 hover:bg-[#131a2b] hover:border-blue-500/50 text-slate-300 font-bold text-xs flex flex-col items-center justify-center space-y-2 transition">
+                <i class="fa-solid fa-circle-exclamation text-lg text-rose-400"></i><span>Complaints</span>
+              </button>
+              <button data-schema="penalty_slabs" class="schema-btn p-4 rounded-xl border border-slate-800 bg-[#131a2b]/40 hover:bg-[#131a2b] hover:border-blue-500/50 text-slate-300 font-bold text-xs flex flex-col items-center justify-center space-y-2 transition">
+                <i class="fa-solid fa-indian-rupee-sign text-lg text-amber-400"></i><span>Penalty Slabs</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Box -->
+          <div id="drop-zone" class="glass border-2 border-dashed border-slate-800 hover:border-blue-500/50 hover:bg-slate-800/10 p-12 rounded-2xl flex flex-col items-center justify-center space-y-4 cursor-pointer transition">
+            <input type="file" id="csv-file-input" accept=".csv" class="hidden">
+            <div class="w-16 h-16 rounded-full bg-blue-600/10 text-blue-400 border border-blue-500/20 flex items-center justify-center text-2xl animate-bounce">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <div class="text-center">
+              <h4 class="text-sm font-bold text-white">Drag & drop your database CSV spreadsheet here</h4>
+              <p class="text-xs text-slate-500 mt-1">Accepts raw exported CSV files up to 2MB. Columns will auto-align.</p>
+            </div>
+            <button id="btn-browse-file" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl border border-blue-500/30 transition">
+              Browse Files
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 2: COLUMN MAPPER ==================== -->
+        <div id="step-panel-2" class="hidden space-y-6">
+          <div class="glass p-6 rounded-2xl border border-slate-800 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 class="text-md font-bold text-white heading-mono">Map Imported Fields</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Link your custom CSV headers to their corresponding destination database columns.</p>
+              </div>
+              <span class="text-xs font-semibold px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg" id="selected-table-badge">Table: equipment</span>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Field mapping items populated dynamically -->
+              <div id="mapping-fields-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Javascript populated -->
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-6 border-t border-slate-800">
+              <button id="btn-map-back" class="bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                Back
+              </button>
+              <button id="btn-map-next" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition">
+                Initiate Dry-Run
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== STEP 3: DRY RUN REPORT ==================== -->
+        <div id="step-panel-3" class="hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Statistics Sidebar -->
+            <div class="glass p-5 rounded-2xl border border-slate-800 space-y-5 h-fit">
+              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Validation Audit</h4>
+              
+              <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-slate-800/20 border border-slate-800 rounded-xl">
+                  <span class="text-xs text-slate-400">Total Rows</span>
+                  <span id="dry-stat-total" class="font-bold text-white text-sm">0</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl">
+                  <span class="text-xs text-emerald-400">Valid Rows</span>
+                  <span id="dry-stat-valid" class="font-bold text-emerald-400 text-sm">0</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-rose-500/5 border border-rose-500/10 rounded-xl">
+                  <span class="text-xs text-rose-400">Critical Errors</span>
+                  <span id="dry-stat-errors" class="font-bold text-rose-400 text-sm">0</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-amber-500/5 border border-amber-500/10 rounded-xl">
+                  <span class="text-xs text-amber-400">Warnings</span>
+                  <span id="dry-stat-warnings" class="font-bold text-amber-400 text-sm">0</span>
+                </div>
+              </div>
+
+              <!-- Integrity checklist -->
+              <div class="pt-4 border-t border-slate-800 space-y-2.5">
+                <div class="flex items-center space-x-2 text-xs">
+                  <i id="chk-structure" class="fa-solid fa-circle-check text-emerald-400"></i>
+                  <span class="text-slate-300">File Structure Valid</span>
+                </div>
+                <div class="flex items-center space-x-2 text-xs">
+                  <i id="chk-types" class="fa-solid fa-circle-check text-emerald-400"></i>
+                  <span class="text-slate-300">Data Type Casts Correct</span>
+                </div>
+                <div class="flex items-center space-x-2 text-xs">
+                  <i id="chk-fkeys" class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                  <span class="text-slate-300">Foreign Key Integrity Checked</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview Grid & Logs -->
+            <div class="lg:col-span-3 space-y-6">
+              
+              <!-- Tabbed View: Grid Preview / Validation Logs -->
+              <div class="glass rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+                <div class="bg-[#131a2b]/60 px-4 py-2 border-b border-slate-800 flex items-center justify-between">
+                  <div class="flex space-x-2">
+                    <button id="btn-tab-preview" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 rounded-lg text-white border border-slate-700/50">Grid Preview</button>
+                    <button id="btn-tab-logs" class="px-3 py-1.5 text-xs font-semibold hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition">Validation Log Console</button>
+                  </div>
+                  <span class="text-[10px] text-slate-500 font-mono">Double-check data alignments</span>
+                </div>
+
+                <!-- Preview Grid Panel -->
+                <div id="panel-tab-preview" class="overflow-x-auto max-h-[300px]">
+                  <table class="w-full text-left text-xs border-collapse">
+                    <thead id="tbl-dry-head" class="bg-slate-800/40 text-slate-400 border-b border-slate-800">
+                      <!-- Dynamic -->
+                    </thead>
+                    <tbody id="tbl-dry-body" class="divide-y divide-slate-800/40 text-slate-300 font-mono">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Logs console Panel -->
+                <div id="panel-tab-logs" class="hidden bg-[#070b13] p-4 text-xs font-mono text-slate-400 min-h-[300px] max-h-[300px] overflow-y-auto space-y-1">
+                  <!-- Dynamic -->
+                </div>
+              </div>
+
+              <!-- Navigation -->
+              <div class="flex justify-between items-center">
+                <button id="btn-dry-back" class="bg-slate-800 border border-slate-700 text-slate-300 font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                  Adjust Columns
+                </button>
+                <button id="btn-dry-commit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-2.5 rounded-xl flex items-center space-x-2 transition">
+                  <i class="fa-solid fa-cloud-arrow-up"></i><span>Approve & Write Data</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== STEP 4: IMPORT COMPLETE ==================== -->
+        <div id="step-panel-4" class="hidden">
+          <div class="glass p-12 rounded-2xl border border-slate-800 flex flex-col items-center justify-center text-center space-y-5">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-3xl animate-pulse">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <div class="space-y-2">
+              <h3 class="text-xl font-bold text-white heading-mono">Batch Ingestion Successful!</h3>
+              <p class="text-xs text-slate-400 max-w-md mx-auto">All verified rows have been transactionally appended. The local cache tables and charts have synchronized.</p>
+            </div>
+
+            <!-- Import Details List -->
+            <div class="bg-[#131a2b]/50 border border-slate-800 p-4 rounded-xl text-left w-full max-w-sm text-xs font-mono space-y-2 text-slate-300">
+              <div class="flex justify-between">
+                <span>Ingested Table:</span>
+                <span id="final-table" class="font-bold text-cyan-400 uppercase">districts</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Committed Records:</span>
+                <span id="final-rows" class="font-bold text-white">0</span>
+              </div>
+              <div class="flex justify-between">
+                <span>Audit Stamp ID:</span>
+                <span id="final-stamp" class="text-slate-500 text-[10px]">audit_171120</span>
+              </div>
+            </div>
+
+            <div class="flex space-x-3 pt-4">
+              <button id="btn-final-dashboard" class="bg-slate-800 border border-slate-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                Dashboard
+              </button>
+              <button id="btn-final-view" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition">
+                View Records
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../../services/db.js"></script>
+  <script src="../../utils/helpers.js"></script>
+  <script src="../../services/api.js"></script>
+  <script src="import.js"></script>
+</body>
+</html>

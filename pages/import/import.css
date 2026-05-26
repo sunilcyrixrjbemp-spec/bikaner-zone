@@ -1,0 +1,75 @@
+/* Cyrix OMS v3.5 — Import Hub Styles */
+/* Created by Senior UI/UX Architect */
+
+.glass {
+  background: rgba(22, 30, 49, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Custom Schema Selection button transitions */
+.schema-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.schema-btn.active {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+  color: #ffffff;
+}
+
+/* Custom Drag and Drop Hover triggers */
+#drop-zone.dragover {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+/* Red outline for cells with validation errors */
+.cell-error {
+  background-color: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+/* Yellow warning highlights for unvalidated warnings */
+.cell-warning {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+/* Glow red animation for errors indicators */
+.glow-red {
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.3);
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: 0;
+  width: 1px;
+  background-color: #1e293b;
+}
+
+.timeline-item:last-child::before {
+  display: none;
+}
