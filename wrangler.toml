@@ -1,7 +1,7 @@
 # Cyrix OMS v3.0 — Cloudflare Wrangler Configuration
 # Built by Lead CTO & Principal Architect (35+ years experience)
 
-name = "cyrix-oms"
+name = "bikaner-zone"
 pages_build_output_dir = "."
 compatibility_date = "2026-05-26"
 account_id = "befbd2e0ff580a1d0d0865f011002053"
