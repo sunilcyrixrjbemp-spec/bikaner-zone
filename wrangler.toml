@@ -3,6 +3,10 @@
 
 name = "cyrix-oms"
 pages_build_output_dir = "."
+compatibility_date = "2026-05-26"
+
+[assets]
+directory = "."
 
 # Bindings to D1 Database
 [[d1_databases]]
