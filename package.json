@@ -1,0 +1,23 @@
+{
+  "name": "sunil-app",
+  "version": "1.0.0",
+  "description": "Cyrix OMS v3.0 is a premium, edge-optimized Operations Management System and SLA Penalty Engine built using **Pure JavaScript, CSS, and HTML**. It features a **dual-mode architecture** that automatically runs locally (using IndexedDB persistent storage) or scales globally (using Cloudflare Pages Functions and Cloudflare D1 SQL Database).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunilcyrixrjbemp-spec/bikaner-zone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunilcyrixrjbemp-spec/bikaner-zone/issues"
+  },
+  "homepage": "https://github.com/sunilcyrixrjbemp-spec/bikaner-zone#readme",
+  "devDependencies": {
+    "wrangler": "^4.95.0"
+  }
+}
