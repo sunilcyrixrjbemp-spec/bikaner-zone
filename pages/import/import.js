@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dropZone: document.getElementById('drop-zone'),
     fileInput: document.getElementById('csv-file-input'),
     browseBtn: document.getElementById('btn-browse-file'),
+    downloadTemplateBtn: document.getElementById('btn-download-template'),
     
     // Panels
     panel1: document.getElementById('step-panel-1'),
@@ -142,11 +143,64 @@ document.addEventListener('DOMContentLoaded', async () => {
   function initController() {
     setupSidebarEvents();
     setupSchemaButtons();
+    setupDownloadTemplateButton();
     setupDragAndDrop();
     setupMapperButtons();
     setupDryRunTabToggle();
     setupDryRunNavButtons();
     setupCompletionButtons();
+  }
+
+  // --- 5a. SAMPLE CSV TEMPLATE ENGINE ---
+  const SAMPLE_TEMPLATES = {
+    districts: [
+      ['id', 'name', 'zone'],
+      ['bikaner', 'Bikaner', 'North'],
+      ['churu', 'Churu', 'North-East'],
+      ['ganganagar', 'Ganganagar', 'North-West'],
+      ['hanumangarh', 'Hanumangarh', 'North']
+    ],
+    hospitals: [
+      ['id', 'district_id', 'name', 'hospital_type', 'address', 'contact_email'],
+      ['h1', 'bikaner', 'PBM Government Hospital Bikaner', 'Medical College', 'Bikaner City', 'pbm@rajasthan.gov.in'],
+      ['h2', 'bikaner', 'District Hospital Nokha', 'District Hospital', 'Nokha', 'nokha@rajasthan.gov.in']
+    ],
+    equipment: [
+      ['id', 'barcode', 'name', 'model', 'hospital_id', 'asset_value', 'warranty_expiry', 'purchase_date', 'status'],
+      ['eq1001', 'CYX-EQ-1001', '128-Slice CT Scanner', 'GE Optima 660', 'h1', '4500000', '2027-12-15', '2022-12-15', 'Operational'],
+      ['eq1002', 'CYX-EQ-1002', 'ICU Ventilator', 'Philips Respironics V60', 'h1', '850000', '2025-08-20', '2020-08-20', 'Operational']
+    ],
+    complaints: [
+      ['id', 'complaint_no', 'equipment_id', 'hospital_id', 'district_id', 'raise_date', 'attend_date', 'close_date', 'status', 'warranty_flag', 'di_name', 'remarks'],
+      ['c1001', 'CYX-CP-2026-001', 'eq1001', 'h1', 'bikaner', '2026-05-10T10:00:00Z', '2026-05-10T14:30:00Z', '2026-05-12T16:00:00Z', 'Closed', 'Warranty', 'Dr. Ashok Verma', 'Resolved calibration cable replacement.']
+    ],
+    penalty_slabs: [
+      ['id', 'max_value', 'per_period'],
+      ['slab1', '500000', '500'],
+      ['slab2', '2000000', '1500'],
+      ['slab3', '99999999', '3000']
+    ]
+  };
+
+  function setupDownloadTemplateButton() {
+    el.downloadTemplateBtn.addEventListener('click', () => {
+      const schema = state.selectedSchema;
+      const rows = SAMPLE_TEMPLATES[schema];
+      if (!rows) return;
+
+      const csvContent = rows.map(r => r.map(val => `"${val.toString().replace(/"/g, '""')}"`).join(',')).join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `cyrix_oms_template_${schema}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      console.log(`[Import] Template downloaded for schema: ${schema}`);
+    });
   }
 
   function setupSidebarEvents() {
